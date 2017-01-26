@@ -1,7 +1,7 @@
 <?php
 
 // Load the server constants before the /core/CodeIgniter.php is loaded.
-require_once('/srv/www/conf/proj266_constants.php');
+require_once('/srv/www/conf/proj376_constants.php');
 
 // define the default environment
 defined('ENVIRONMENT')        OR define('ENVIRONMENT', 'production');

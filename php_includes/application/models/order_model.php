@@ -51,11 +51,27 @@ class Order_Model extends CI_Model {
 	
 	/**
 	 * update
+	 * @param $data
+	 * @throws InvalidArgumentException when parameters doesn't meet its contract
 	 * 
 	 * @return void
 	 */
-	public function update() {
+	public function update($data) {
+		$this->order_lib->validate_update_data($data);
 		
+		// Sanitize user data
+		$data['salesforce_order_id'] = $this->db->escape($data['salesforce_order_id']);
+		$data['tracking_number'] = $this->db->escape($data['tracking_number']);
+		$data['lot_code'] = $this->db->escape($data['lot_code']);
+		$data['imei_number'] = $this->db->escape($data['imei_number']);
+		$data['carrier'] = $this->db->escape($data['carrier']);
+		$data['shipping_service'] = $this->db->escape($data['shipping_service']);
+		
+		// Prepare user sql
+		$sql = $this->order_lib->update_sql($data);
+		
+		// execute the query
+		$this->db->query($sql);
 	}
 	
 	/**

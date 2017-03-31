@@ -78,21 +78,52 @@ class Order_Library {
 	
 	/**
 	 * update_sql
+	 * @param string $data
 	 * 
 	 * @return string $sql
 	 */
-	public function update_sql() {
+	public function update_sql($data) {
+		// verify data
+		$this->validate_update_data($data);
 		
+		$sql = "
+			UPDATE 
+				". ORDERS ."
+			SET
+				". ORDERS .".tracking_number = ". $data['tracking_number'] .",
+				". ORDERS .".lot_code = ". $data['lot_code'] .",
+				". ORDERS .".imei_number = ". $data['imei_number'] .",
+				". ORDERS .".carrier = ". $data['carrier'] .",
+				". ORDERS .".shipping_service = ". $data['shipping_service'] ."
+			WHERE
+				". ORDERS .".salesforce_order_id = ". $data['salesforce_order_id'] ."
+		";
+		
+		return $sql;
 	}
 	
 	/**
 	 * validate_update_data
-	 * 
+	 * @param array $data
+	 * @throws InvalidArgumentException when parameters doesn't meet its contract
+	 *
 	 * @return void
 	 */
-	public function validate_update_data() {
-		
+	public function validate_update_data($data) {
+		// verify data
+		if (is_array($data) !== true) {
+			throw new InvalidArgumentException('Invalid $data passed. Must not be an array.');
+		}
+	
+		if (strlen($data['salesforce_order_id']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["salesforce_order_id"] passed. Must not be empty.');
+		}
+	
+		if (strlen($data['tracking_number']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["tracking_number"] passed. Must not be empty.');
+		}
 	}
+	
 	
 	/**
 	 * check_order_exists_sql

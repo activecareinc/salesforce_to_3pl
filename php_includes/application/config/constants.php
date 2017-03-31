@@ -130,3 +130,6 @@ define('WEBSITE', 'Website');
 
 ############## PAGES ####################
 define('DEFAULT_PAGE_LIMIT', 10);
+
+############## TABLES ####################
+define('ORDERS', 'orders');

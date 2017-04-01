@@ -3,12 +3,6 @@
 
 class Order_Model extends CI_Model {
 	
-	/**
-	 * Order_Model
-	 */
-	public function Order_Model() {
-		
-	}
 	
 	/**
 	 * insert
@@ -42,11 +36,9 @@ class Order_Model extends CI_Model {
 		$query = $this->db->query($sql);
 		
 		// verify there was no error in the query
-		if (is_object($query) !== true) {
-			throw new RuntimeException(EXCEPTION_RUNTIME);
+		if ($query !== true) {
+			throw new RuntimeException("Error inserting orders.");
 		}
-		
-		return  $this->db->insert_id;
 	}
 	
 	/**
@@ -134,8 +126,32 @@ class Order_Model extends CI_Model {
 		$query = $this->db->query($sql);
 		
 		// Verify there was no error in the query
+		if (is_object($query)!== true) {
+			throw new RuntimeException('Error retrieving records.');
+		}
+		
+		// Get results
+		$result = $query->result();
+		
+		return $result;
+	}
+	
+	/**
+	 * read_list_import_to_salesforce
+	 * @throws RuntimeException when there is an error in executing the query
+	 * 
+	 * @return array $result
+	 */
+	public function read_list_import_to_salesforce() {
+		// Prepare user sql
+		$sql = $this->order_lib->read_list_import_to_salesforce();
+		
+		// execute the query
+		$query = $this->db->query($sql);
+		
+		// Verify there was no error in the query
 		if (is_object($query) !== true) {
-			throw new RuntimeException(EXCEPTION_RUNTIME);
+			throw new RuntimeException('Error retrieving records.');
 		}
 		
 		// Get results

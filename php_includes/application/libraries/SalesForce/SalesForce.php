@@ -30,8 +30,7 @@ class SalesForce {
 	 *
 	 * @param string $username
 	 * @param string $password
-	 * @param string $token
-	 *
+	 * 
 	 * @return void
 	 */
 	public function authenticate($username, $password) {

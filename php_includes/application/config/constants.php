@@ -133,3 +133,10 @@ define('DEFAULT_PAGE_LIMIT', 10);
 
 ############## TABLES ####################
 define('ORDERS', 'orders');
+
+############## 3PL ####################
+define('THREE_PL_KEY', '');
+define('USERNAME', '3pl-rs\tpl374');
+define('PASSWORD', 'SunglassMasonJarOranges');
+define('FACILITY_ID', '');
+define('CUSTOMER_ID', '');

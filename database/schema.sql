@@ -13,6 +13,7 @@ CREATE TABLE `orders` (
   `order_date_created` DATETIME NULL,
   `is_import_3pl` TINYINT NOT NULL DEFAULT 0,
   `date_created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_salesforce_updated` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`));
 
 

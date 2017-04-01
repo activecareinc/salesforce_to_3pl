@@ -195,4 +195,24 @@ class Order_Library {
 		
 		return $sql;
 	}
+	
+	/**
+	 * read_list_import_to_salesforce
+	 * 
+	 * @return string $sql
+	 */
+	public function read_list_import_to_salesforce() {
+		$sql = "
+			SELECT 
+				". ORDERS .".*
+			FROM
+				". ORDERS ."
+			WHERE
+				" . ORDERS . ".is_salesforce_updated = 0
+			AND 
+				" . ORDERS . ".tracking_number IS NOT NULL
+		";
+		
+		return $sql;
+	}
 }

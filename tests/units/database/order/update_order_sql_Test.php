@@ -220,4 +220,16 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$query1 = self::$DB->query($sql1);
 		$this->assertTrue((int)$query1->num_rows > 0);
 	}
+	
+	/**
+	 * test_read_list_import_to_salesforce
+	 * 
+	 * @return void
+	 */
+	public function test_read_list_import_to_salesforce() {
+		// read data
+		$sql = self::$ORDER_LIB->read_list_import_to_salesforce();
+		$query = self::$DB->query($sql);
+		$this->assertTrue((int)$query->num_rows === 1);
+	}
 }

@@ -1,19 +1,27 @@
-<?php
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Class: SalesForce_Order_Model
  */
-class SalesForce_Order_Model {
+class SalesForce_Order_Model extends CI_Model {
 	
 	/**
 	 * @var SalesForce $salesforce
 	 */
-	private $salesforce
+	private $salesforce;
 	
 	/**
 	 * default constructor
 	 */
-	public function __construct(SalesForce $salesforce) {
+	public function __construct() {
+		parent::__construct();
+	}
+	
+	/**
+	 * set salesforce
+	 * @return SalesForce $salesforce;
+	 */
+	public function setSalesForce(SalesForce $salesforce) {
 		$this->salesforce = $salesforce;
 	}
 	
@@ -42,42 +50,58 @@ class SalesForce_Order_Model {
 			// loop through the results to retrieve the other details of the record
 			foreach ($order_records as $order) {
 				
-				// set the query to retrieve account details
-				$account_query = $this->salesforce_order_lib->read_account_by_id($order->AccountId);
-				
 				// select the account where the order is associated
+				$account_query = $this->salesforce_order_lib->read_account_by_id($order->AccountId);
 				$account = $this->salesforce->getClient()->query($account_query);
 				
 				// make sure we only have single record returned
-				$account = reset($account);
+				$account = reset($account->records);
 				
-				// set the query to retrieve the contact details
-				$customer_query = $this->salesforce_order_lib->read_contact_by_id($order->Order_Contact_c__c);
+				// verify if we have contact
+				if (strlen(trim($order->Order_Contact_c__c)) > 0) {
+					// select the contact where the order is associated
+					$customer_query = $this->salesforce_order_lib->read_contact_by_id($order->Order_Contact_c__c);
+					$customer = $this->salesforce->getClient()->query($customer_query);
+					$customer = reset($customer->records);
+				}
 				
-				// select the contact where the order is associated
-				$customer = $this->salesforce->getClient()->query($customer_query);
-				
-				// query to retrieve ship_to
-				$ship_to_query = $this->salesforce_order_lib->read_contact_by_id($order->ShipToContactId);
-				
-				// select the contact where the order is associated
-				$ship_to = $this->salesforce->getClient()->query($ship_to_query);
-				
-				// make sure we only have single record returned
-				$contact = reset($account);
+				// verify if we have ship to
+				if (strlen(trim($order->ShipToContactId)) > 0) {
+					// select the contact where the order is associated
+					$ship_to_query = $this->salesforce_order_lib->read_contact_by_id($order->ShipToContactId);
+					$ship_to = $this->salesforce->getClient()->query($ship_to_query);
+					$ship_to = reset($ship_to->records);
+				}
 				
 				// verify if the order belongs to activecare
 				if ($account->Name === 'activecare') {
 					$order_obj = new stdClass();
 					$order_obj->salesforce_order_id = $order->Id;
+					$order_obj->customer = $account->Name;
 					$order_obj->order_ref_no = $order->OrderReferenceNumber;
 					$order_obj->ship_to = $ship_to->Name;
-					$order_obj->customer = $customer->Name;
+					$order_obj->customer = $account->Name;
 					$orders[] = $order_obj;
 				}
 			}
 		}
 		
 		return $orders;
+	}
+	
+	/**
+	 * method to update order based on details from 3pl
+	 * 
+	 * @param stdClass $data
+	 * @return void
+	 */
+	public function update($data) {
+		// verify we have valid data to update
+		if ($data instanceof stdClass !== true) {
+			throw new InvalidArgumentException('Invalid parameter $data. Must be an object');
+		}
+		
+		// update the order in salesforce
+		$this->salesforce->getClient()->update(array($data), 'Order');
 	}
 }

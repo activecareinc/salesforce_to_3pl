@@ -100,4 +100,47 @@ class Order_Model extends CI_Model {
 		
 		return false;
 	}
+	
+	/**
+	 * update_is_import_to_3pl
+	 * @param string $salesforce_order_id
+	 * 
+	 * @return void
+	 */
+	public function update_is_import_to_3pl($salesforce_order_id) {
+		// Verify $salesforce_order_id
+		$this->order_lib->validate_salesforce_order_id($salesforce_order_id);
+		
+		$salesforce_order_id = $this->db->escape($salesforce_order_id);
+		
+		// Prepare user sql
+		$sql = $this->order_lib->update_is_import_to_3pl_sql($salesforce_order_id);
+		
+		// execute the query
+		$this->db->query($sql);
+	}
+	
+	/**
+	 * read_list_not_import_to
+	 * @throws RuntimeException when there is an error in executing the query
+	 * 
+	 * @return array $result
+	 */
+	public function read_list_not_import_to() {
+		// Prepare user sql
+		$sql = $this->order_lib->read_list_not_import_to_3pl();
+		
+		// execute the query
+		$query = $this->db->query($sql);
+		
+		// Verify there was no error in the query
+		if (is_object($query) !== true) {
+			throw new RuntimeException(EXCEPTION_RUNTIME);
+		}
+		
+		// Get results
+		$result = $query->result();
+		
+		return $result;
+	}
 }

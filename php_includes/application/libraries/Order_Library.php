@@ -156,4 +156,43 @@ class Order_Library {
 			throw new InvalidArgumentException('Invalid $salesforce_id passed. Must not be empty.');
 		}
 	}
+	
+	/**
+	 * update_is_import_to_3pl_sql
+	 * @param string $salesforce_order_id
+	 * 
+	 * @return string $sql
+	 */
+	public function update_is_import_to_3pl_sql($salesforce_order_id) {
+		$this->validate_salesforce_order_id($salesforce_order_id);
+		
+		$sql = "
+			UPDATE
+				". ORDERS ."
+			SET
+				". ORDERS .".is_import_3pl = 1
+			WHERE
+				". ORDERS .".salesforce_order_id = ". $salesforce_order_id ."
+		";
+		
+		return $sql;
+	}
+	
+	/**
+	 * read_list_not_import_to_3pl
+	 * 
+	 * @return string $sql
+	 */
+	public function read_list_not_import_to_3pl() {
+		$sql = "
+			SELECT 
+				". ORDERS .".*
+			FROM
+				". ORDERS ."
+			WHERE
+				". ORDERS .".is_import_3pl = 0
+		";
+		
+		return $sql;
+	}
 }

@@ -11,6 +11,7 @@ CREATE TABLE `orders` (
   `order_ref_number` VARCHAR(255) NULL,
   `ship_to_name` VARCHAR(255) NULL,
   `order_date_created` DATETIME NULL,
+  `is_import_3pl` TINYINT NOT NULL DEFAULT 0,
   `date_created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`));
 

@@ -79,8 +79,8 @@ class SalesForce_Order_Model extends CI_Model {
 					$order_obj->salesforce_order_id = $order->Id;
 					$order_obj->customer = $account->Name;
 					$order_obj->order_ref_no = $order->OrderReferenceNumber;
-					$order_obj->ship_to = $ship_to->Name;
-					$order_obj->customer = $account->Name;
+					$order_obj->ship_to_name = $customer->Name;
+					//$order_obj->customer = $customer->Name;
 					$orders[] = $order_obj;
 				}
 			}
@@ -102,6 +102,8 @@ class SalesForce_Order_Model extends CI_Model {
 		}
 		
 		// update the order in salesforce
-		$this->salesforce->getClient()->update(array($data), 'Order');
+		$update = $this->salesforce->getClient()->update(array($data), 'Order');
+		
+		return $update;
 	}
 }

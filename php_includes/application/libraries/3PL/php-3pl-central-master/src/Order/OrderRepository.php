@@ -5,6 +5,7 @@ namespace ThreePlCentral\Order;
 use DateTime;
 use ThreePlCentral\ThreePlCentral;
 use ThreePlCentral\RequestFactory;
+use ThreePlCentral\Exception;
 
 class OrderRepository
 {
@@ -51,6 +52,19 @@ class OrderRepository
      * return object
      */
     public static function createOrder(ThreePlCentral $threepl, $param) {
+    	// validate parameters
+    	if (strlen($param['order_ref_number']) < 1) {
+    		throw new Exception("Invalid order_ref_number passed. Must be string with value.");
+    	}
+    	
+    	if (strlen($param['customer']) < 1) {
+    		throw new Exception("Invalid customer passed. Must be string with value.");
+    	}
+    	
+    	if (strlen($param['ship_to_name']) < 1) {
+    		throw new Exception("Invalid ship_to_name passed. Must be string with value.");
+    	}
+    	
     	$request = RequestFactory::create(
     			$threepl,
     			'POST',

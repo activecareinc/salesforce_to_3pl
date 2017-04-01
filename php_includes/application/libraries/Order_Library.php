@@ -215,4 +215,25 @@ class Order_Library {
 		
 		return $sql;
 	}
+	
+	/**
+	 * update_is_salesforce_updated_sql
+	 * @param string $salesforce_order_id
+	 * 
+	 * @return string $sql
+	 */
+	public function update_is_salesforce_updated_sql($salesforce_order_id) {
+		$this->validate_salesforce_order_id($salesforce_order_id);
+		
+		$sql = "
+			UPDATE
+				". ORDERS ."
+			SET
+				". ORDERS .".is_salesforce_updated = 1
+			WHERE
+				". ORDERS .".salesforce_order_id = ". $salesforce_order_id ."
+		";
+		
+		return $sql;
+	}
 }

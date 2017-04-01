@@ -159,4 +159,23 @@ class Order_Model extends CI_Model {
 		
 		return $result;
 	}
+	
+	/**
+	 * update_is_salesforce_updated
+	 * @param string $salesforce_order_id
+	 * 
+	 * @return void
+	 */
+	public function update_is_import_to_3pl($salesforce_order_id) {
+		// Verify $salesforce_order_id
+		$this->order_lib->validate_salesforce_order_id($salesforce_order_id);
+		
+		$salesforce_order_id = $this->db->escape($salesforce_order_id);
+		
+		// Prepare user sql
+		$sql = $this->order_lib->update_is_salesforce_updated_sql($salesforce_order_id);
+		
+		// execute the query
+		$this->db->query($sql);
+	}
 }

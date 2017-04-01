@@ -61,6 +61,7 @@ class Index extends MY_Controller {
 				$order_arr = array();
 				$order_arr['salesforce_order_id'] = $order->salesforce_order_id;
 				$order_arr['customer'] = $order->customer;
+				$order_arr['ship_to_name'] = $order->ship_to_name;
 				
 				// check if the order record already exist in database
 				$is_exist = $this->order_model->is_order_exists($order->salesforce_order_id);
@@ -94,10 +95,19 @@ class Index extends MY_Controller {
 			foreach ($orders as $order) {
 				$salesforce_order = new stdClass();
 				$salesforce_order->Id = $order->salesforce_order_id;
+				
+				// @todo change this one to add other details on the description field
 				$salesforce_order->Description = $order->tracking_number;
 				
 				// update the record in salesforce
-				$this->salesforce_order_model->update($salesforce_order);
+				$update = $this->salesforce_order_model->update($salesforce_order);
+				
+				// verify if the record in salesforce is updated
+				if ($update[0]->success === true) {
+					// update the record in db
+					$this->order_model->update_is_salesforce_updated($update[0]->id);
+				}
+				
 			}
 			
 		} catch (Exception $e) {

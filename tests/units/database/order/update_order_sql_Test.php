@@ -232,4 +232,38 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$query = self::$DB->query($sql);
 		$this->assertTrue((int)$query->num_rows === 1);
 	}
+	
+	/**
+	 * test_is_salesforce_updated_invalid_salesforce_id
+	 *
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $salesforce_id passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_is_salesforce_updated_invalid_salesforce_id() {
+		self::$ORDER_LIB->update_is_salesforce_updated_sql('');
+	}
+	
+	/**
+	 * test_is_salesforce_updated
+	 * 
+	 * @return void
+	 */
+	public function test_is_salesforce_updated() {
+		// read data
+		$sql = "SELECT ". ORDERS .".* FROM ". ORDERS ." WHERE ". ORDERS .".id = " . self::$ORDER_ID;
+		$query = self::$DB->query($sql);
+		$result = $query->fetch_object();
+		$this->assertEquals($result->is_salesforce_updated, 0);
+		
+		// update is import
+		$sql = self::$ORDER_LIB->update_is_salesforce_updated_sql(self::$DB->escape('testsf001'));
+		self::$DB->query($sql);
+		
+		// read data
+		$sql1 = "SELECT ". ORDERS .".* FROM ". ORDERS ." WHERE ". ORDERS .".id = " . self::$ORDER_ID;
+		$query1 = self::$DB->query($sql1);
+		$result1 = $query1->fetch_object();
+		$this->assertEquals($result1->is_salesforce_updated, 1);
+	}
 }

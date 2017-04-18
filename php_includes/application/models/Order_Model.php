@@ -166,7 +166,7 @@ class Order_Model extends CI_Model {
 	 * 
 	 * @return void
 	 */
-	public function update_is_import_to_3pl($salesforce_order_id) {
+	public function update_is_salesforce_updated($salesforce_order_id) {
 		// Verify $salesforce_order_id
 		$this->order_lib->validate_salesforce_order_id($salesforce_order_id);
 		

@@ -19,7 +19,7 @@ class Index extends MY_Controller {
 		// authenticate to salesforce
 		$client = new SforceEnterpriseClient();
 		$salesforce = new SalesForce($client);
-		$salesforce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD);
+		$salesforce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, SALESFORCE_TOKEN);
 		
 		// load required libraries
 		$this->load->library('SalesForce_Order_Library', array(), 'salesforce_order_lib');
@@ -60,12 +60,20 @@ class Index extends MY_Controller {
 				// initialize array
 				$order_arr = array();
 				$order_arr['salesforce_order_id'] = $order->salesforce_order_id;
+				$order_arr['tracking_number'] = $order->tracking_number;
+				$order_arr['order_expiration_date'] = $order->order_expiration_date;
+				$order_arr['lot_code'] =  $product->lot_code;
+				$order_arr['imei_number'] = $product->imei_number;
+				$order_arr['carrier'] = $order->carrier;
+				$order_arr['shipping_service'] = $order->shipping_service;
 				$order_arr['customer'] = $order->customer;
+				$order_arr['order_ref_no'] = $order->order_ref_no;
 				$order_arr['ship_to_name'] = $order->ship_to_name;
+				$order_arr['order_date_created'] = $order->order_date_created;
 				
 				// check if the order record already exist in database
 				$is_exist = $this->order_model->is_order_exists($order->salesforce_order_id);
-				error_log($is_exist);
+				
 				if ($is_exist === false) {
 					// insert into table
 					$this->order_model->insert($order_arr);
@@ -97,7 +105,7 @@ class Index extends MY_Controller {
 				$salesforce_order->Id = $order->salesforce_order_id;
 				
 				// @todo change this one to add other details on the description field
-				$salesforce_order->Description = $order->tracking_number;
+				$salesforce_order->Tracking_Number__c = $order->tracking_number;
 				
 				// update the record in salesforce
 				$update = $this->salesforce_order_model->update($salesforce_order);

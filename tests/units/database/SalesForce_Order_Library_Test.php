@@ -24,7 +24,7 @@ class SalesForce_Order_Library_Test extends PHPUnit_Framework_TestCase {
 		$client = new SforceEnterpriseClient();
 
 		self::$salesForce = new SalesForce($client);
-		self::$salesForce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD);
+		self::$salesForce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, SALESFORCE_TOKEN);
 	}
 
 	/**
@@ -96,6 +96,58 @@ class SalesForce_Order_Library_Test extends PHPUnit_Framework_TestCase {
 		// verify we have records returned
 		$this->assertEquals($contact->Id, '0034400001lAFZZAA4');
 		$this->assertEquals($contact->Name, 'TONYA COVELLO');
+	}
+	
+	/**
+	 * test to verify read_order_items_by_order_id method if param is invalid
+	 * 
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $order_id. Must be a valid string.
+	 * @return void
+	 */
+	public function test_read_order_items_by_order_id_invalid_id() {
+		$salesforce_library = new SalesForce_Order_Library();
+		$salesforce_library->read_order_items_by_order_id('');
+	}
+	
+	/**
+	 * test to verify read_order_items_by_order_id method if param is invalid
+	 * 
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $product_id. Must be a valid string.
+	 * @return void
+	 */
+	public function test_read_product_by_id_invalid_id() {
+		$salesforce_library = new SalesForce_Order_Library();
+		$salesforce_library->read_product_by_id('');
+	}
+	
+	/**
+	 * test to verify read_order_items_by_order_id method
+	 * @return void
+	 */
+	public function test_read_order_items_by_order_id() {
+		$salesforce_library = new SalesForce_Order_Library();
+		$query = $salesforce_library->read_order_items_by_order_id('801Q00000002y0EIAQ');
+		$order_items = self::$salesForce->getClient()->query($query);
+		
+		// verify there are records returned
+		$order_items = reset($order_items->records);
+		$this->assertEquals('01t4400000AZ4vWAAT', $order_items->Product2Id);
+	}
+	
+	/**
+	 * test to verify read_product_by_id method
+	 * @return void
+	 */
+	public function test_read_product_by_id() {
+		$salesforce_library = new SalesForce_Order_Library();
+		$query = $salesforce_library->read_product_by_id('01t4400000AZ4vWAAT');
+		$product = self::$salesForce->getClient()->query($query);
+
+		// verify there are records returned
+		$product = reset($product->records);
+		$this->assertEquals('01t4400000AZ4vWAAT', $product->ID__c);
 	}
 	
 }

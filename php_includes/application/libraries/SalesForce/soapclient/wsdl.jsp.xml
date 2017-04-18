@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Salesforce.com Enterprise Web Services API Version 39.0
-Generated on 2017-03-31 07:27:39 +0000.
+Generated on 2017-04-18 00:34:10 +0000.
 
 Package Versions:
 Salesforce1 and Chatter Apps (Version: 1.12, Namespace: sf_chttr_apps)
 Salesforce Connected Apps (Version: 1.7, Namespace: sf_com_apps)
 DupeCatcher (Version: 2.1, Namespace: sfssdupecatcher)
-HealthCloud (Version: 206.13, Namespace: healthcloudga)
+HealthCloud (Version: 206.14, Namespace: healthcloudga)
 inContact Agent for Salesforce (Version: 5.0, Namespace: icagentconsole)
 Company Dashboards (Version: 1.0, Namespace: dash)
 Data.com Assessment (Version: 3.2, Namespace: ddcassess)
@@ -11622,8 +11622,8 @@ All Rights Reserved
                         <element name="OrderItems" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="OrderNumber" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="OrderReferenceNumber" nillable="true" minOccurs="0" type="xsd:string"/>
-                        <element name="Order_Contact_c__c" nillable="true" minOccurs="0" type="tns:ID"/>
-                        <element name="Order_Contact_c__r" nillable="true" minOccurs="0" type="ens:Contact"/>
+                        <element name="Order_Contact__c" nillable="true" minOccurs="0" type="tns:ID"/>
+                        <element name="Order_Contact__r" nillable="true" minOccurs="0" type="ens:Contact"/>
                         <element name="Orders" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="OriginalOrder" nillable="true" minOccurs="0" type="ens:Order"/>
                         <element name="OriginalOrderId" nillable="true" minOccurs="0" type="tns:ID"/>
@@ -11649,12 +11649,15 @@ All Rights Reserved
                         <element name="ShippingPostalCode" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="ShippingState" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="ShippingStreet" nillable="true" minOccurs="0" type="xsd:string"/>
+                        <element name="Shipping_Service_Field__c" nillable="true" minOccurs="0" type="xsd:string"/>
+                        <element name="Shipping_Service__c" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="Status" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="StatusCode" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="SystemModstamp" nillable="true" minOccurs="0" type="xsd:dateTime"/>
                         <element name="Tasks" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="TopicAssignments" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="TotalAmount" nillable="true" minOccurs="0" type="xsd:double"/>
+                        <element name="Tracking_Number__c" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="Type" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="UserRecordAccess" nillable="true" minOccurs="0" type="ens:UserRecordAccess"/>
                         </sequence>
@@ -12835,6 +12838,7 @@ All Rights Reserved
                         <element name="Feeds" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="Histories" nillable="true" minOccurs="0" type="tns:QueryResult"/>
                         <element name="ID__c" nillable="true" minOccurs="0" type="xsd:string"/>
+                        <element name="IMEI_Number__c" nillable="true" minOccurs="0" type="xsd:double"/>
                         <element name="IsActive" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="IsDeleted" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="LastModifiedBy" nillable="true" minOccurs="0" type="ens:User"/>
@@ -12843,6 +12847,7 @@ All Rights Reserved
                         <element name="LastReferencedDate" nillable="true" minOccurs="0" type="xsd:dateTime"/>
                         <element name="LastViewedDate" nillable="true" minOccurs="0" type="xsd:dateTime"/>
                         <element name="LookedUpFromActivities" nillable="true" minOccurs="0" type="tns:QueryResult"/>
+                        <element name="Lot_Code__c" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="NDC__c" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="Name" nillable="true" minOccurs="0" type="xsd:string"/>
                         <element name="Notes" nillable="true" minOccurs="0" type="tns:QueryResult"/>
@@ -22236,7 +22241,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="https://test.salesforce.com/services/Soap/c/39.0/0DFQ0000000Cd5x"/>
+            <soap:address location="https://test.salesforce.com/services/Soap/c/39.0/0DFQ0000000Cd88"/>
         </port>
     </service>
 </definitions>

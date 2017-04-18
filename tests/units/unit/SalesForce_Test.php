@@ -29,7 +29,7 @@ class SalesForce_Test extends PHPUnit_Framework_TestCase {
 		$client = new SforceEnterpriseClient();
 
 		$salesForce = new SalesForce($client);
-		$salesForce->authenticate('', '');
+		$salesForce->authenticate('', '', '');
 	}
 
 	/**
@@ -45,7 +45,23 @@ class SalesForce_Test extends PHPUnit_Framework_TestCase {
 		$client = new SforceEnterpriseClient();
 
 		$salesForce = new SalesForce($client);
-		$salesForce->authenticate('username', '');
+		$salesForce->authenticate('username', '', '');
+	}
+
+	/**
+	 * verify token is not given
+	 * @depends test_empty_password
+	 *
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $token passed, cannot be empty
+	 *
+	 * @return void
+	 */
+	public function test_empty_token() {
+		$client = new SforceEnterpriseClient();
+
+		$salesForce = new SalesForce($client);
+		$salesForce->authenticate('username', 'password', '');
 	}
 
 	/**
@@ -63,7 +79,7 @@ class SalesForce_Test extends PHPUnit_Framework_TestCase {
 		$client = new SforceEnterpriseClient();
 
 		$salesForce = new SalesForce($client);
-		$salesForce->authenticate('username', 'password');
+		$salesForce->authenticate('username', 'password', 'token');
 	}
 
 	/**
@@ -75,7 +91,7 @@ class SalesForce_Test extends PHPUnit_Framework_TestCase {
 		$client = new SforceEnterpriseClient();
 
 		$salesForce = new SalesForce($client);
-		$salesForce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD);
+		$salesForce->authenticate(SALESFORCE_USERNAME, SALESFORCE_PASSWORD, SALESFORCE_TOKEN);
 
 		// temporarily verify for now that these required fields are not empty
 		// the next test will determine if this defined values are valid

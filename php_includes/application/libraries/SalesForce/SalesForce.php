@@ -30,10 +30,11 @@ class SalesForce {
 	 *
 	 * @param string $username
 	 * @param string $password
+	 * @param string $token
 	 * 
 	 * @return void
 	 */
-	public function authenticate($username, $password) {
+	public function authenticate($username, $password, $token) {
 		$result = false;
 
 		// Check the required parameters
@@ -45,6 +46,10 @@ class SalesForce {
 			throw new InvalidArgumentException('Invalid parameter $password passed, cannot be empty');
 		}
 
+		if(strlen(trim($token)) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $token passed, cannot be empty');
+		}
+
 		// set this explicitly to NULL when
 		// no organizationId is set to the Application
 		// we are connecting to
@@ -52,7 +57,7 @@ class SalesForce {
 			
 		// create the connection, then login user
 		$this->client->createConnection(__DIR__ . '/soapclient/wsdl.jsp.xml');
-		$this->client->login( $username, $password);
+		$this->client->login( $username, $password.$token);
 
 		if(strlen(trim($this->client->getSessionId())) < 1) {
 			throw new RuntimeException('Unable to authenticate. Invalid account credentials');

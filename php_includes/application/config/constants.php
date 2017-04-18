@@ -135,8 +135,8 @@ define('DEFAULT_PAGE_LIMIT', 10);
 define('ORDERS', 'orders');
 
 ############## 3PL ####################
-define('THREE_PL_KEY', '');
+define('THREE_PL_KEY', 'fadd0b89-392b-49b8-acfa-bb8f327992b2');
 define('USERNAME', '3pl-rs\tpl374');
 define('PASSWORD', 'SunglassMasonJarOranges');
-define('FACILITY_ID', '');
-define('CUSTOMER_ID', '');
+define('FACILITY_ID', '1');
+define('CUSTOMER_ID', '37');

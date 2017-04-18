@@ -58,9 +58,9 @@ class SalesForce_Order_Model extends CI_Model {
 				$account = reset($account->records);
 				
 				// verify if we have contact
-				if (strlen(trim($order->Order_Contact_c__c)) > 0) {
+				if (strlen(trim($order->Order_Contact__c)) > 0) {
 					// select the contact where the order is associated
-					$customer_query = $this->salesforce_order_lib->read_contact_by_id($order->Order_Contact_c__c);
+					$customer_query = $this->salesforce_order_lib->read_contact_by_id($order->Order_Contact__c);
 					$customer = $this->salesforce->getClient()->query($customer_query);
 					$customer = reset($customer->records);
 				}
@@ -73,14 +73,28 @@ class SalesForce_Order_Model extends CI_Model {
 					$ship_to = reset($ship_to->records);
 				}
 				
+				// retrieve the product associated to order
+				$item_query = $this->salesforce_order_lib->read_order_items_by_order_id($order->Id);
+				$order_item = $this->salesforce->getClient()->query($item_query);
+				$order_item = reset($order_item->records);
+				$product_query = $this->salesforce_order_lib->read_product_by_id($order_item->Product2Id);
+				$product = $this->salesforce->getClient()->query($product_query);
+				$product = reset($product->records);
+				
 				// verify if the order belongs to activecare
 				if ($account->Name === 'activecare') {
 					$order_obj = new stdClass();
 					$order_obj->salesforce_order_id = $order->Id;
+					$order_obj->tracking_number = $order->Tracking_Number__c;
+					$order_obj->order_expiration_date = $order->EndDate;
+					$order_obj->lot_code =  $product->Lot_Code__c;
+					$order_obj->imei_number = $product->IMEI_Number__c;
+					$order_obj->carrier = $order->Shipping_Service__c;
+					$order_obj->shipping_service = $order->Shipping_Service_Field__c;
 					$order_obj->customer = $account->Name;
 					$order_obj->order_ref_no = $order->OrderReferenceNumber;
 					$order_obj->ship_to_name = $customer->Name;
-					//$order_obj->customer = $customer->Name;
+					$order_obj->order_date_created = $order->CreatedDate;
 					$orders[] = $order_obj;
 				}
 			}

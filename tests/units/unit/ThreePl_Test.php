@@ -1,14 +1,10 @@
 <?php
-// Load db
-use ThreePlCentral\Order\OrderRepository;
-use ThreePlCentral\ThreePlCentral;
+use \ThreePlCentral\Order\OrderRepository;
+use \ThreePlCentral\RequestFactory;
+use \ThreePlCentral\ThreePlCentral;
+use \ThreePlCentral\Exception;
 
 require_once(dirname(__FILE__) . '/../../system/config.php');
-
-// Load library
-require_once(dirname(__FILE__) . '/../../../php_includes/application/libraries/3PL/php-3pl-central-master/src/Order/OrderRepository.php');
-require_once(dirname(__FILE__) . '/../../../php_includes/application/libraries/3PL/php-3pl-central-master/src/ThreePlCentral.php');
-require_once(dirname(__FILE__) . '/../../../php_includes/application/libraries/3PL/php-3pl-central-master/src/Exception.php');
 
 
 /**
@@ -100,5 +96,15 @@ class ThreePl_Test extends PHPUnit_Framework_TestCase {
 	public function test_order_create_invalid_customer() {
 		$this->test_data['customer'] = '';
 		OrderRepository::createOrder($this->three_pl, $this->test_data);
+	}
+	
+	/**
+	 * test to retrieve orders from 3PL
+	 */
+	public function test_retrieve_orders() {
+		$start_date = ((new \DateTime())->modify('-30 days'));
+		$end_date = new \DateTime();
+		
+		$response = OrderRepository::findOrders($this->three_pl, $start_date, $end_date);
 	}
 }

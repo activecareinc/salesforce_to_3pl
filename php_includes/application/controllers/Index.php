@@ -26,6 +26,7 @@ class Index extends MY_Controller {
 		$this->load->library('Order_Library', array(), 'order_lib');
 		$this->load->model('SalesForce_Order_Model', 'salesforce_order_model');
 		$this->load->model('Order_Model', 'order_model');
+		$this->load->model('ThreePl_Order_Model', array(THREE_PL_KEY, CUSTOMER_ID, FACILITY_ID, USERNAME, PASSWORD), 'threepl_order_model');
 		
 		// set salesforce
 		$this->salesforce_order_model->setSalesForce($salesforce);
@@ -83,6 +84,23 @@ class Index extends MY_Controller {
 			// retrieve the records from the database that will be imported to 3pl
 			$orders_to_3pl = $this->order_model->read_list_not_import_to();
 			
+			// loop through the orders saved in the database
+			// create the orders in 3PL
+			foreach ($orders_to_3pl as $order_to_3pl) {
+				$threepl_order = array();
+				$threepl_order['order_ref_number'] = $order_to_3pl->order_ref_no;
+				$threepl_order['customer'] = $order_to_3pl->customer;
+				$threepl_order['ship_to_name'] = $order_to_3pl->ship_to_name;
+			
+				$order_create = $this->threepl_order_model->create_order();
+				
+				// update the flag in the database once imported to 3pl
+				// @todo need to check how the salesforce id is saved in 3pl
+				// and also response from 3pl once order is successfully created
+				$this->order_model->update_is_import_to_3pl();
+				
+			}
+			
 		} catch (Exception $e) {
 			error_log($e->getMessage() . $e->getLine() . $e->getFile());
 		}
@@ -95,6 +113,18 @@ class Index extends MY_Controller {
 	 */
 	public function agile_to_salesforce() {
 		try {
+			
+			// retrieve the orders from 3pl
+			$orders_from_3pl = $this->threepl_order_model->retrieve_order();
+			
+			// update the details stored in database
+			// @todo add other details that will be saved to database
+			// and check response from 3pl
+			foreach ($orders_from_3pl as $order_from_3pl) {
+				$order_data = array();
+				$order_data['tracking_number'] = $order_from_3pl->TrackingNumber;
+				$this->order_model->update($order_data);
+			}
 			
 			// retrieve the records that will be imported to salesforce
 			$orders = $this->order_model->read_list_import_to_salesforce();

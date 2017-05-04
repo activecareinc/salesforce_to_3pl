@@ -70,11 +70,12 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 		$response = $this->three_pl->get('http://secure-wms.com/orders', array('pgsiz'=>10, 'pgnum'=>1), array());
 		$this->assertNotNull($response);
 		$this->assertTrue(is_object($response));
-		var_dump($response);
+		$this->assertTrue(property_exists($response, 'header'));
+		$this->assertTrue(property_exists($response, 'body'));
+		$this->assertTrue(property_exists($response, 'original_request'));
 	}
 
 	/**
-	 * test_order_create_invalid_order_ref
 	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage Invalid parameter $url. Must be a non-empty string.
 	 */
@@ -83,7 +84,6 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * test_order_create_invalid_order_ref
 	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage Invalid parameter $query. Must be an array.
 	 */
@@ -92,7 +92,6 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * test_order_create_invalid_order_ref
 	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage Invalid parameter $additional_headers. Must be an array.
 	 */
@@ -100,5 +99,29 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 		$response = $this->three_pl->get('http://secure-wms.com/orders', array(), 'pgsiz=10&pgnum=1');
 	}
 	
+	public function test_post() {
+		$response = $this->three_pl->get('http://secure-wms.com/orders', array('pgsiz'=>10, 'pgnum'=>1), array());
+		$this->assertNotNull($response);
+		$this->assertTrue(is_object($response));
+		$this->assertTrue(property_exists($response, 'header'));
+		$this->assertTrue(property_exists($response, 'body'));
+		$this->assertTrue(property_exists($response, 'original_request'));
+	}
+
+	/*
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $url. Must be a non-empty string.
+	 */
+	public function test_post_invalid_url() {
+		$response = $this->three_pl->post('http://secure-wms.com/orders', array('pgsiz'=>10, 'pgnum'=>1), array());
+	}
+
+	/*
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $payload. Must be an array or instance of stdClass.
+	 */
+	public function test_post_invalid_payload() {
+		$response = $this->three_pl->post('http://secure-wms.com/orders', '{json:true}', array());
+	}
 	
 }

@@ -17,37 +17,63 @@ class ThreePL_API_Client {
 	}
 
 
+	/**
+	 * Send a POST request to the 3pl API
+	 * @param string $url
+	 * @param object|array $payload An object or arry containing the data to be sent. Will be implicitly converted to a json string before being sent.
+	 * @param array $additional_headers array of additional headers to include in the request
+	 * @return object wraps the response headers, body and the original request sent to the api
+	 */
 	public function post($url, $payload, $additional_headers = array()) {
+		// validate url
 		if (is_string($url) !== true || strlen($url) < 1) {
 			throw new InvalidArgumentException('Invalid parameter $url. Must be a non-empty string.');
 		}
 
+		// check if payload is valid
 		if (is_object($payload) !== true && is_array($payload) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $payload. Must be an array or instance of stdClass.');
 		}
 
+		// check if additional headers is an array
+		// no need to check for length since additional headers are optional
 		if (is_array($additional_headers) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $additional_headers. Must be an array.');
 		}
 
+		// merge additional headers with default
 		$headers = array_merge($this->default_headers, $additional_headers);
 		return $this->send('POST', $url, json_encode($payload), array(), $headers);
 	}
 
 
+	/**
+	 * Send a GET request to the 3pl API
+	 * @param string $url
+	 * @param array $query a key-value array containing the data for the query string
+	 * @param array $additional_headers array of additional headers to include in the request
+	 * @return object wraps the response headers, body and the original request sent to the api
+	 */
 	public function get($url, $query = array(), $additional_headers = array()) {
+		// validate url
 		if (is_string($url) !== true || strlen($url) < 1) {
 			throw new InvalidArgumentException('Invalid parameter $url. Must be a non-empty string.');
 		}
 
+		// validate query
+		// do not check for length because query is optional
 		if (is_array($query) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $query. Must be an array.');
 		}
 
+
+		// check if additional headers is an array
+		// no need to check for length since additional headers are optional
 		if (is_array($additional_headers) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $additional_headers. Must be an array.');
 		}
 
+		// merge headers
 		$headers = array_merge($this->default_headers, $additional_headers);
 
 		return $this->send('GET', $url, null, $query, $headers);
@@ -160,72 +186,72 @@ class ThreePL_API_Client {
 
 
 	/**
-	 *
+	 * Send a request to the api to create an order
+	 * @param array $data
+	 * @param string $token
+	 * @return 
 	 */	
 	public function create_order($data, $token) {
 
+		// validate $data
 		if (is_array($data) !== true || count($data) < 1) {
 			throw new InvalidArgumentException('Invalid parameter $data. Must be an non-empty array');
 		}
 
+		// check for api token
 		if (is_string($token) !== true || strlen($token) < 1) {
 			throw new InvalidArgumentException('Invalid parameter $token. Must be an non-empty string');
 		}
 
+		// check that customer id is provided
 		if (isset($data['customer_identifier']) !== true || is_string($data['customer_identifier']) !== true || strlen($data['customer_identifier']) < 1) {
 			throw new InvalidArgumentException("Invalid parameter 'customer_identifier'. Must be an non-empty string ");
 		}
 
+		// validate facility id
 		if (isset($data['facility_identifier']) !== true || is_string($data['facility_identifier']) !== true || strlen($data['facility_identifier']) < 1) {
 			throw new InvalidArgumentException("Invalid parameter 'facility_identifier'. Must be an non-empty string");
 		}
 
+		// validate reference number
 		if (isset($data['order_ref_number']) !== true || is_string($data['order_ref_number']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'order_ref_number'. Must be an non-empty string");
 		}
 
+		// validate carrier
 		if (isset($data['carrier']) !== true || is_string($data['carrier']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'carrier'. Must be an non-empty string");
 		}
 
+		// validate service level
 		if (isset($data['service_level']) !== true || is_string($data['service_level']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'service_level'. Must be an non-empty string");
 		}
 
-		if (isset($data['ship_to_address']) !== true || is_string($data['ship_to_address']) !== true) {
-			throw new InvalidArgumentException("Invalid parameter 'ship_to_address'. Must be an non-empty string");
-		}
-
-
+		// validate shipping data
 		if (isset($data['ship_to_name']) !== true || is_string($data['ship_to_name']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_name'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_company']) !== true || is_string($data['ship_to_company']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_company'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_address']) !== true || is_string($data['ship_to_address']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_address'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_city']) !== true || is_string($data['ship_to_city']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_city'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_state']) !== true || is_string($data['ship_to_state']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_state'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_postal_code']) !== true || is_string($data['ship_to_postal_code']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_postal_code'. Must be an non-empty string");
 		}
-
 		if (isset($data['ship_to_country']) !== true || is_string($data['ship_to_country']) !== true) {
 			throw new InvalidArgumentException("Invalid parameter 'ship_to_country'. Must be an non-empty string");
 		}
 
-
+		// create new object to hold order data
 		$order = new stdClass;
 
 		// set customer id
@@ -239,7 +265,7 @@ class ThreePL_API_Client {
 		$order->routingInfo = new stdClass;
 		$order->routingInfo->carrier = $data['carrier'];
 		$order->routingInfo->mode = $data['service_level'];
-
+		// set shipping data
 		$order->shipTo = new stdClass;
 		$order->shipTo->companyName = $data['ship_to_company'];
 		$order->shipTo->name = $data['ship_to_name'];
@@ -249,18 +275,23 @@ class ThreePL_API_Client {
 		$order->shipTo->zip = $data['ship_to_postal_code'];
 		$order->shipTo->country = $data['ship_to_country'];
 
+		// add token to the header
 		$headers = array(
 			'Authorization: Bearer ' . $token
 		);
 
+		// send request
 		$response = $this->post('/orders', $order, $headers);
+		// check the http status
 		$response_code = $response->header['http_code'];
+		// if not 201 Created
 		if ($response->header['http_code'] !== 201) {
-			error_log(json_encode($response->body));
+			// log response
+			error_log(json_encode($response));
 			$body = json_decode($response->body);
 			throw new RuntimeException($body->ErrorCode);
 		}
-
+		return $response;
 	}
 
 }

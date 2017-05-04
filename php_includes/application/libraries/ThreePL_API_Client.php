@@ -5,12 +5,14 @@
 */
 class ThreePL_API_Client {
 
-	private $default_headrers;
+	private $default_headers;
+
+	private $base_url = 'http://secure-wms.com';
 
 	function __construct() {
 		$this->default_headers = array(
-			'Content-Type' => 'application/json; charset=utf-8',
-			'Accept' =>'application/json'
+			'Content-Type: application/json; charset=utf-8',
+			'Accept: application/json'
 		);
 	}
 
@@ -20,13 +22,16 @@ class ThreePL_API_Client {
 			throw new InvalidArgumentException('Invalid parameter $url. Must be a non-empty string.');
 		}
 
-		if (is_object($payload) !== true || is_array($payload)) {
+		if (is_object($payload) !== true && is_array($payload) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $payload. Must be an array or instance of stdClass.');
 		}
 
 		if (is_array($additional_headers) !== true) {
 			throw new InvalidArgumentException('Invalid parameter $additional_headers. Must be an array.');
 		}
+
+		$headers = array_merge($this->default_headers, $additional_headers);
+		return $this->send('POST', $url, json_encode($payload), array(), $headers);
 	}
 
 
@@ -45,31 +50,22 @@ class ThreePL_API_Client {
 
 		$headers = array_merge($this->default_headers, $additional_headers);
 
-		return json_decode($this->send('GET', $url, null, $query, $headers)->body);
-	}
-
-	public function put($url, $payload, $additional_headers = array()) {
-
-	}
-
-	public function delete($url, $query = array(), $additional_headers = array()) {
-
+		return $this->send('GET', $url, null, $query, $headers);
 	}
 
 	/**
 	 * Method to send an http request via curl
-	 * @param 
+	 * @param string $method 
+	 * @param string $url
+	 * @param string $body
+	 * @param array $query
+	 * @param array $header
 	 * @return object
 	 */
 	public function send($method, $url, $body, $query, $header) {
 		// body is required on POST
 		if ($method === 'POST' && strlen($body) < 1) {
-			throw InvalidArgumentException('Invalid argument $body. Must not be empty on POST requests');
-		}
-
-		// body is also requried on PUT
-		if ($method === 'PUT' && strlen($body) < 1) {
-			throw InvalidArgumentException('Invalid argument $body. Must not be empty on POST requests');
+			throw new InvalidArgumentException('Invalid parameter $body. Must not be empty on POST requests');
 		}
 
 
@@ -80,18 +76,21 @@ class ThreePL_API_Client {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-		// construct the additional headers
-		if(count($header) > 0) {
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-		}
+
 
 		if ($method === 'POST' || $method === 'PUT') {
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
 		}
+
+		// construct the additional headers
+		if(count($header) > 0) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		}
+
+		$url = $this->base_url . $url;
 		// construct the data only if it is not empty
 		$url .= '?' . http_build_query($query);
-
 
 		curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -123,6 +122,145 @@ class ThreePL_API_Client {
 		curl_close($ch);
 
 		return $response;
+	}
+
+	/**
+	 * Send an authentication request to 3pl
+	 * @param string $key
+	 * @param string $login_id
+	 * @return object plain object containing access_token
+	 */
+	public function authenticate($key, $login_id) {
+
+		// check if key is a valid string
+		if (is_string($key) !== true || strlen($key) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $key. Must be a non-empty string.');
+		}
+
+		// check if login is a valid string
+		if (is_string($login_id) !== true || strlen($login_id) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $login_id. Must be a non-empty string.');
+		}
+		// set headers for authentication
+		$headers = array(
+			'Authorization: Basic ZmE2OWNiM2QtMGYyMy00Y2JjLThlZWEtMzA5YTVkOWU3ZDRmOldUbVNzY0MzRFpQK1M2VkVWejVLT3BjLzVxYkRQYWdr'
+		);
+
+		// create object for the request's body
+		$body = new stdClass;
+		$body->grant_type = 'client_credentials';
+		$body->tpl = $key;
+		$body->user_login_id = $login_id;
+
+		// send post request
+		$response = $this->post('/AuthServer/api/Token', $body, $headers);
+
+		return json_decode($response->body);
+	}
+
+
+	/**
+	 *
+	 */	
+	public function create_order($data, $token) {
+
+		if (is_array($data) !== true || count($data) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $data. Must be an non-empty array');
+		}
+
+		if (is_string($token) !== true || strlen($token) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $token. Must be an non-empty string');
+		}
+
+		if (isset($data['customer_identifier']) !== true || is_string($data['customer_identifier']) !== true || strlen($data['customer_identifier']) < 1) {
+			throw new InvalidArgumentException("Invalid parameter 'customer_identifier'. Must be an non-empty string ");
+		}
+
+		if (isset($data['facility_identifier']) !== true || is_string($data['facility_identifier']) !== true || strlen($data['facility_identifier']) < 1) {
+			throw new InvalidArgumentException("Invalid parameter 'facility_identifier'. Must be an non-empty string");
+		}
+
+		if (isset($data['order_ref_number']) !== true || is_string($data['order_ref_number']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'order_ref_number'. Must be an non-empty string");
+		}
+
+		if (isset($data['carrier']) !== true || is_string($data['carrier']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'carrier'. Must be an non-empty string");
+		}
+
+		if (isset($data['service_level']) !== true || is_string($data['service_level']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'service_level'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_address']) !== true || is_string($data['ship_to_address']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_address'. Must be an non-empty string");
+		}
+
+
+		if (isset($data['ship_to_name']) !== true || is_string($data['ship_to_name']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_name'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_company']) !== true || is_string($data['ship_to_company']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_company'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_address']) !== true || is_string($data['ship_to_address']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_address'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_city']) !== true || is_string($data['ship_to_city']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_city'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_state']) !== true || is_string($data['ship_to_state']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_state'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_postal_code']) !== true || is_string($data['ship_to_postal_code']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_postal_code'. Must be an non-empty string");
+		}
+
+		if (isset($data['ship_to_country']) !== true || is_string($data['ship_to_country']) !== true) {
+			throw new InvalidArgumentException("Invalid parameter 'ship_to_country'. Must be an non-empty string");
+		}
+
+
+		$order = new stdClass;
+
+		// set customer id
+		$order->customerIdentifier = new stdClass;
+		$order->customerIdentifier->id = $data['customer_identifier'];
+		// set facility id
+		$order->facilityIdentifier = new stdClass;
+		$order->facilityIdentifier->id = $data['facility_identifier'];
+		// set order ref number
+		$order->referenceNum = $data['order_ref_number'];
+		$order->routingInfo = new stdClass;
+		$order->routingInfo->carrier = $data['carrier'];
+		$order->routingInfo->mode = $data['service_level'];
+
+		$order->shipTo = new stdClass;
+		$order->shipTo->companyName = $data['ship_to_company'];
+		$order->shipTo->name = $data['ship_to_name'];
+		$order->shipTo->address1 = $data['ship_to_address'];
+		$order->shipTo->city = $data['ship_to_city'];
+		$order->shipTo->state = $data['ship_to_state'];
+		$order->shipTo->zip = $data['ship_to_postal_code'];
+		$order->shipTo->country = $data['ship_to_country'];
+
+		$headers = array(
+			'Authorization: Bearer ' . $token
+		);
+
+		$response = $this->post('/orders', $order, $headers);
+		$response_code = $response->header['http_code'];
+		if ($response->header['http_code'] !== 201) {
+			error_log(json_encode($response->body));
+			$body = json_decode($response->body);
+			throw new RuntimeException($body->ErrorCode);
+		}
+
 	}
 
 }

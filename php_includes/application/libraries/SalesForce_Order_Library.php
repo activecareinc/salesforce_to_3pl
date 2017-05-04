@@ -24,6 +24,11 @@ class SalesForce_Order_Library {
 					Tracking_Number__c, 
 					Shipping_Service__c, 
 					Shipping_Service_Field__c,
+					ShippingCity,
+					ShippingCountry,
+					ShippingPostalCode,
+					ShippingState,
+					ShippingStreet,
 					EndDate
 				FROM 
 					Order 

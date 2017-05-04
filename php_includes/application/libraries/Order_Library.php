@@ -31,8 +31,14 @@ class Order_Library {
 				`shipping_service`,
 				`customer`,
 				`order_ref_number`,
+				`order_date_created`,
 				`ship_to_name`,
-				`order_date_created`
+				`ship_to_company`,
+				`ship_to_address`,
+				`ship_to_city`,
+				`ship_to_state`,
+				`ship_to_postal_code`,
+				`ship_to_country`
 			)
 			VALUES
 			(
@@ -45,9 +51,14 @@ class Order_Library {
 				". $data['shipping_service'] .",
 				". $data['customer'] .",
 				". $data['order_ref_number'] .",
+				". $data['order_date_created'] .",
 				". $data['ship_to_name'] .",
-				". $data['order_date_created'] ."
-				
+				". $data['ship_to_company'] .",
+				". $data['ship_to_address'] .",
+				". $data['ship_to_city'] .",
+				". $data['ship_to_state'] .",
+				". $data['ship_to_postal_code'] .",
+				". $data['ship_to_country'] ."
 			)
 		";
 		
@@ -74,7 +85,32 @@ class Order_Library {
 		if (strlen($data['customer']) < 1) {
 			throw new InvalidArgumentException('Invalid $data["customer"] passed. Must not be empty.');
 		}
+
+		if (strlen($data['ship_to_name']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_name"] passed. Must not be empty.');
+		}
+
+		if (strlen($data['ship_to_address']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_address"] passed. Must not be empty.');
+		}
+
+		if (strlen($data['ship_to_city']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_city"] passed. Must not be empty.');
+		}
+
+		if (strlen($data['ship_to_state']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_state"] passed. Must not be empty.');
+		}
+
+		if (strlen($data['ship_to_postal_code']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_postal_code"] passed. Must not be empty.');
+		}
+
+		if (strlen($data['ship_to_country']) < 1) {
+			throw new InvalidArgumentException('Invalid $data["ship_to_country"] passed. Must not be empty.');
+		}
 	}
+
 	
 	/**
 	 * update_sql

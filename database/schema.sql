@@ -10,10 +10,16 @@ CREATE TABLE `orders` (
   `customer` VARCHAR(255) NOT NULL,
   `order_ref_number` VARCHAR(255) NULL,
   `ship_to_name` VARCHAR(255) NULL,
+  `ship_to_company` VARCHAR(255) NULL,
   `order_date_created` DATETIME NULL,
   `is_import_3pl` TINYINT NOT NULL DEFAULT 0,
   `date_created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `is_salesforce_updated` TINYINT NOT NULL DEFAULT 0,
+  `ship_to_address` VARCHAR(255) NULL,
+  `ship_to_city` VARCHAR(255) NULL,
+  `ship_to_state` VARCHAR(255) NULL,
+  `ship_to_postal_code` VARCHAR(45) NULL,
+  `ship_to_country` VARCHAR(255) NULL,
   PRIMARY KEY (`id`));
 
 

@@ -130,7 +130,7 @@ class SalesForce_Order_Library_Test extends PHPUnit_Framework_TestCase {
 		$salesforce_library = new SalesForce_Order_Library();
 		$query = $salesforce_library->read_order_items_by_order_id('801Q00000002y0EIAQ');
 		$order_items = self::$salesForce->getClient()->query($query);
-		
+
 		// verify there are records returned
 		$order_items = reset($order_items->records);
 		$this->assertEquals('01t4400000AZ4vWAAT', $order_items->Product2Id);

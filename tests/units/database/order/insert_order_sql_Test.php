@@ -81,6 +81,14 @@ class insert_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$this->test_data['order_ref_number'] = self::$DB->escape('or1234');
 		$this->test_data['ship_to_name'] = self::$DB->escape('Test User Ship');
 		$this->test_data['order_date_created'] = self::$DB->escape(date('Y-m-d'));
+		$this->test_data['ship_to_name'] = self::$DB->escape("Hannah Baker");
+		$this->test_data['ship_to_company'] = self::$DB->escape("");
+		$this->test_data['ship_to_address'] = self::$DB->escape('123 Baker St.');
+		$this->test_data['ship_to_city'] = self::$DB->escape('Boston');
+		$this->test_data['ship_to_state'] = self::$DB->escape('Massachusetts');
+		$this->test_data['ship_to_postal_code'] = self::$DB->escape('01841');
+		$this->test_data['ship_to_country'] = self::$DB->escape('US');
+
 	}
 	
 	/**
@@ -115,6 +123,66 @@ class insert_order_sql_Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_insert_order_invalid_customer() {
 		$this->test_data['customer'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_name"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_name() {
+		$this->test_data['ship_to_name'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_address"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_address() {
+		$this->test_data['ship_to_address'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_city"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_city() {
+		$this->test_data['ship_to_city'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_state"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_state() {
+		$this->test_data['ship_to_state'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_postal_code"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_postal_code() {
+		$this->test_data['ship_to_postal_code'] = '';
+		self::$ORDER_LIB->insert_sql($this->test_data);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid $data["ship_to_country"] passed. Must not be empty.
+	 * @return void
+	 */
+	public function test_insert_order_invalid_ship_to_country() {
+		$this->test_data['ship_to_country'] = '';
 		self::$ORDER_LIB->insert_sql($this->test_data);
 	}
 	

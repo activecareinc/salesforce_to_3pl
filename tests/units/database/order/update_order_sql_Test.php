@@ -87,6 +87,12 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$this->test_data['order_ref_number'] = self::$DB->escape('or1234');
 		$this->test_data['ship_to_name'] = self::$DB->escape('Test User Ship');
 		$this->test_data['order_date_created'] = self::$DB->escape(date('Y-m-d'));
+		$this->test_data['ship_to_company'] = self::$DB->escape("");
+		$this->test_data['ship_to_address'] = self::$DB->escape('123 Baker St.');
+		$this->test_data['ship_to_city'] = self::$DB->escape('Boston');
+		$this->test_data['ship_to_state'] = self::$DB->escape('Massachusetts');
+		$this->test_data['ship_to_postal_code'] = self::$DB->escape('01841');
+		$this->test_data['ship_to_country'] = self::$DB->escape('US');
 		
 		$this->test_update_data = array();
 		$this->test_update_data['tracking_number'] = self::$DB->escape('track_num001');

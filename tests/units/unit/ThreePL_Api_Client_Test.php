@@ -171,6 +171,38 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(property_exists($response, 'token_type'));
 	}
 
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $data. Must be an non-empty array
+	 */
+	public function test_create_order_invalid_data() {
+		$response = $this->three_pl->create_order(array(), '1231312h');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $token. Must be an non-empty string
+	 */
+	public function test_create_order_invalid_token() {
+
+		$data = array(
+			'facility_identifier' => FACILITY_ID,
+			'customer_identifier' => CUSTOMER_ID,
+			'order_ref_number' => 'TEST ORDER ' . time(),
+			'carrier' => 'UPS',
+			'service_level' => 'Ground',
+			'ship_to_company' => 'Bridge',
+			'ship_to_name' => 'Engineer Test',
+			'ship_to_address' => '123 Main St.',
+			'ship_to_city' => 'Hayward',
+			'ship_to_state' => 'CA',
+			'ship_to_postal_code' => '95454',
+			'ship_to_country' => 'US',
+		);
+		$response = $this->three_pl->create_order($data, '');
+	}
+
 	/**
 	 * Test sending request to create an order
 	 * @depends test_authenticate
@@ -450,4 +482,30 @@ class ThreePl_Api_Client_Test extends PHPUnit_Framework_TestCase {
 		);
 		$response = $this->three_pl->create_order($data, '123');
 	}
+
+	/**
+	 *
+	 * @depends test_authenticate
+	 */
+	public function test_retrieve_orders() {
+
+		$token = $this->three_pl->authenticate(THREE_PL_KEY, FACILITY_ID);
+		$response = $this->three_pl->retrieve_orders($token->access_token);
+
+		$this->assertNotNull($response);
+		$this->assertTrue(property_exists($response, 'TotalResults'));
+		$this->assertTrue(property_exists($response, 'ResourceList'));
+
+		$this->assertTrue(is_array($response->ResourceList));
+		$this->assertGreaterThan(0, count($response->ResourceList));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage Invalid parameter $token. Must be an non-empty string
+	 */
+	public function test_retrieve_orders_invalid_token() {
+		$response = $this->three_pl->retrieve_orders('');
+	}
+
 }

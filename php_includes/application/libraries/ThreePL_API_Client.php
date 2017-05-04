@@ -294,4 +294,33 @@ class ThreePL_API_Client {
 		return $response;
 	}
 
+
+	/**
+	 * Send a GET Request to retrieve a list of orders
+	 * @param string $token
+	 */
+	public function retrieve_orders($token) {
+		// check for api token
+		if (is_string($token) !== true || strlen($token) < 1) {
+			throw new InvalidArgumentException('Invalid parameter $token. Must be an non-empty string');
+		}
+
+		// add token to the header
+		$headers = array(
+			'Authorization: Bearer ' . $token
+		);
+
+
+		$response = $this->get('/orders', array(), $headers);
+
+		if ($response->header['http_code'] !== 200) {
+			// log response
+			error_log(json_encode($response));
+			$body = json_decode($response->body);
+			throw new RuntimeException($body->ErrorCode);
+		}
+		return json_decode($response->body);
+
+	}
+
 }

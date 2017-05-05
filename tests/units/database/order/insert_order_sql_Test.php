@@ -175,16 +175,6 @@ class insert_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$this->test_data['ship_to_postal_code'] = '';
 		self::$ORDER_LIB->insert_sql($this->test_data);
 	}
-
-	/**
-	 * @expectedException InvalidArgumentException
-	 * @expectedExceptionMessage Invalid $data["ship_to_country"] passed. Must not be empty.
-	 * @return void
-	 */
-	public function test_insert_order_invalid_ship_to_country() {
-		$this->test_data['ship_to_country'] = '';
-		self::$ORDER_LIB->insert_sql($this->test_data);
-	}
 	
 	/**
 	 * test_insert_order

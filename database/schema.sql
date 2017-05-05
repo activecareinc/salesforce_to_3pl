@@ -1,6 +1,7 @@
 CREATE TABLE `orders` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `salesforce_order_id` VARCHAR(45) NOT NULL,
+  `threepl_order_id` INT(11) DEFAULT NULL,
   `tracking_number` VARCHAR(255) NULL,
   `order_expiration_date` DATETIME NULL,
   `lot_code` VARCHAR(255) NULL,

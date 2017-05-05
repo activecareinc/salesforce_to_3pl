@@ -105,10 +105,6 @@ class Order_Library {
 		if (strlen($data['ship_to_postal_code']) < 1) {
 			throw new InvalidArgumentException('Invalid $data["ship_to_postal_code"] passed. Must not be empty.');
 		}
-
-		if (strlen($data['ship_to_country']) < 1) {
-			throw new InvalidArgumentException('Invalid $data["ship_to_country"] passed. Must not be empty.');
-		}
 	}
 
 	
@@ -132,7 +128,7 @@ class Order_Library {
 				". ORDERS .".carrier = ". $data['carrier'] .",
 				". ORDERS .".shipping_service = ". $data['shipping_service'] ."
 			WHERE
-				". ORDERS .".salesforce_order_id = ". $data['salesforce_order_id'] ."
+				". ORDERS .".threepl_order_id = ". $data['threepl_order_id'] ."
 		";
 		
 		return $sql;
@@ -151,8 +147,8 @@ class Order_Library {
 			throw new InvalidArgumentException('Invalid $data passed. Must not be an array.');
 		}
 	
-		if (strlen($data['salesforce_order_id']) < 1) {
-			throw new InvalidArgumentException('Invalid $data["salesforce_order_id"] passed. Must not be empty.');
+		if ($data['threepl_order_id'] < 1) {
+			throw new InvalidArgumentException('Invalid $data["threepl_order_id"] passed. Must not be empty.');
 		}
 	
 		if (strlen($data['tracking_number']) < 1) {
@@ -199,14 +195,15 @@ class Order_Library {
 	 * 
 	 * @return string $sql
 	 */
-	public function update_is_import_to_3pl_sql($salesforce_order_id) {
+	public function update_is_import_to_3pl_sql($salesforce_order_id, $order_id) {
 		$this->validate_salesforce_order_id($salesforce_order_id);
 		
 		$sql = "
 			UPDATE
 				". ORDERS ."
 			SET
-				". ORDERS .".is_import_3pl = 1
+				". ORDERS .".is_import_3pl = 1,
+				". ORDERS .".threepl_order_id = {$order_id}
 			WHERE
 				". ORDERS .".salesforce_order_id = ". $salesforce_order_id ."
 		";

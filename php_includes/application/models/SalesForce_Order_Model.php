@@ -57,6 +57,9 @@ class SalesForce_Order_Model extends CI_Model {
 				// make sure we only have single record returned
 				$account = reset($account->records);
 				
+				// initialize customer name
+				$customer_name = '';
+				
 				// verify if we have contact
 				if (strlen(trim($order->Order_Contact__c)) > 0) {
 					// select the contact where the order is associated
@@ -95,6 +98,11 @@ class SalesForce_Order_Model extends CI_Model {
 					$order_obj->order_ref_no = $order->OrderReferenceNumber;
 					$order_obj->ship_to_name = $customer->Name;
 					$order_obj->order_date_created = $order->CreatedDate;
+					$order_obj->ship_to_address = $order->ShippingStreet;
+					$order_obj->ship_to_city = $order->ShippingCity;
+					$order_obj->ship_to_state = $order->ShippingState;
+					$order_obj->ship_to_postal_code = $order->ShippingPostalCode;
+					$order_obj->ship_to_country = $order->ShippingCountry;
 					$orders[] = $order_obj;
 				}
 			}

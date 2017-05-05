@@ -28,6 +28,12 @@ class Order_Model extends CI_Model {
 		$data['order_ref_number'] = $this->db->escape($data['order_ref_number']);
 		$data['ship_to_name'] = $this->db->escape($data['ship_to_name']);
 		$data['order_date_created'] = $this->db->escape($data['order_date_created']);
+		$data['ship_to_company'] = $this->db->escape($data['ship_to_company']);
+		$data['ship_to_address'] = $this->db->escape($data['ship_to_address']);
+		$data['ship_to_city'] = $this->db->escape($data['ship_to_city']);
+		$data['ship_to_state'] = $this->db->escape($data['ship_to_state']);
+		$data['ship_to_postal_code'] = $this->db->escape($data['ship_to_postal_code']);
+		$data['ship_to_country'] = $this->db->escape($data['ship_to_country']);
 		
 		// Prepare user sql
 		$sql = $this->order_lib->insert_sql($data);
@@ -52,7 +58,6 @@ class Order_Model extends CI_Model {
 		$this->order_lib->validate_update_data($data);
 		
 		// Sanitize user data
-		$data['salesforce_order_id'] = $this->db->escape($data['salesforce_order_id']);
 		$data['tracking_number'] = $this->db->escape($data['tracking_number']);
 		$data['lot_code'] = $this->db->escape($data['lot_code']);
 		$data['imei_number'] = $this->db->escape($data['imei_number']);
@@ -99,14 +104,14 @@ class Order_Model extends CI_Model {
 	 * 
 	 * @return void
 	 */
-	public function update_is_import_to_3pl($salesforce_order_id) {
+	public function update_is_import_to_3pl($salesforce_order_id, $order_id) {
 		// Verify $salesforce_order_id
 		$this->order_lib->validate_salesforce_order_id($salesforce_order_id);
 		
 		$salesforce_order_id = $this->db->escape($salesforce_order_id);
 		
 		// Prepare user sql
-		$sql = $this->order_lib->update_is_import_to_3pl_sql($salesforce_order_id);
+		$sql = $this->order_lib->update_is_import_to_3pl_sql($salesforce_order_id, $order_id);
 		
 		// execute the query
 		$this->db->query($sql);

@@ -77,6 +77,7 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 
 		$this->test_data = array();
 		$this->test_data['salesforce_order_id'] = self::$DB->escape('testsf001');
+		$this->test_data['threepl_order_id'] = 123456;
 		$this->test_data['tracking_number'] = self::$DB->escape('');
 		$this->test_data['order_expiration_date'] = self::$DB->escape(date('Y-m-d'));
 		$this->test_data['lot_code'] = self::$DB->escape('');
@@ -96,7 +97,7 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 		
 		$this->test_update_data = array();
 		$this->test_update_data['tracking_number'] = self::$DB->escape('track_num001');
-		$this->test_update_data['salesforce_order_id'] = self::$DB->escape('testsf001');
+		$this->test_update_data['threepl_order_id'] = 123456;
 		$this->test_update_data['lot_code'] = self::$DB->escape('lotcode');
 		$this->test_update_data['imei_number'] = self::$DB->escape('testsf001');
 		$this->test_update_data['carrier'] = self::$DB->escape('carrier');
@@ -141,11 +142,11 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 	 * test_update_order_invalid_salesforce_order_id
 	 *
 	 * @expectedException InvalidArgumentException
-	 * @expectedExceptionMessage Invalid $data["salesforce_order_id"] passed. Must not be empty.
+	 * @expectedExceptionMessage Invalid $data["threepl_order_id"] passed. Must not be empty.
 	 * @return void
 	 */
 	public function test_update_order_invalid_salesforce_order_id() {
-		$this->test_update_data['salesforce_order_id'] = '';
+		$this->test_update_data['threepl_order_id'] = null;
 		self::$ORDER_LIB->update_sql($this->test_update_data);
 	}
 	
@@ -174,7 +175,7 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function test_is_import_3pl_invalid_salesforce_order_id() {
-		self::$ORDER_LIB->update_is_import_to_3pl_sql('');
+		self::$ORDER_LIB->update_is_import_to_3pl_sql('', 123456);
 	}
 	
 	/**
@@ -190,7 +191,7 @@ class update_order_sql_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($result->is_import_3pl, 0);
 		
 		// update is import
-		$sql = self::$ORDER_LIB->update_is_import_to_3pl_sql(self::$DB->escape('testsf001'));
+		$sql = self::$ORDER_LIB->update_is_import_to_3pl_sql(self::$DB->escape('testsf001'), 123456);
 		self::$DB->query($sql);
 		
 		// read data

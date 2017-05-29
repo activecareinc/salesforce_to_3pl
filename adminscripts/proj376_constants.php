@@ -3,8 +3,8 @@ define('BASE_URL', 'http://APPLICATION-URL');
 define('SITE_EMAIL', '');
 
 // API Client Key & Client ID
-define('CLIENT_ID', '7bdc6ba64a8ef52410800823070204c1986dd398c50105e9');
-define('CLIENT_SECRET', '92f97b9ac10362b09671ea9d45f3dd19c44acfbc9822cbf0');
+define('CLIENT_ID', '');
+define('CLIENT_SECRET', '');
 
 // phpunit specific constants
 define('VIEW_DOMAIN_PROTOCOL', 'http://');
@@ -32,10 +32,10 @@ define('DB_USERNAME', 'proj376');
 define('DB_PASSWORD', '');
 define('DB_DATABASE', 'proj376');
 
-define('SALESFORCE_USERNAME', 'mike@agilescs.com');
-define('SALESFORCE_PASSWORD', '*btp123$');
-define('SALESFORCE_TOKEN', 'mNeeWPIMrUSdepMBu3lkHPxyF');
+define('SALESFORCE_USERNAME', '');
+define('SALESFORCE_PASSWORD', '');
+define('SALESFORCE_TOKEN', '');
 
 
-define('CLIENT_ID', 'fa69cb3d-0f23-4cbc-8eea-309a5d9e7d4f');
-define('CLIENT_SECRET', 'WTmSscC3DZP+S6VEVz5KOpc/5qbDPagk');
+define('CLIENT_ID', '');
+define('CLIENT_SECRET', '');
